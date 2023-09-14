@@ -36,19 +36,19 @@ class CalrissianRunnerExecutionHandler(ExecutionHandler):
 
     def get_additional_parameters(self):
         return {
-            "ADES_STAGEOUT_AWS_SERVICEURL": os.getenv("AWS_SERVICE_URL", None),
-            "ADES_STAGEOUT_AWS_REGION": os.getenv("AWS_REGION", None),
-            "ADES_STAGEOUT_AWS_ACCESS_KEY_ID": os.getenv("AWS_ACCESS_KEY_ID", None),
-            "ADES_STAGEOUT_AWS_SECRET_ACCESS_KEY": os.getenv(
-                "AWS_SECRET_ACCESS_KEY", None
+            "STAGEOUT_AWS_SERVICEURL": os.getenv("STAGEOUT_AWS_SERVICEURL", None),
+            "STAGEOUT_AWS_REGION": os.getenv("STAGEOUT_AWS_REGION", None),
+            "STAGEOUT_AWS_ACCESS_KEY_ID": os.getenv("STAGEOUT_AWS_ACCESS_KEY_ID", None),
+            "STAGEOUT_AWS_SECRET_ACCESS_KEY": os.getenv(
+                "STAGEOUT_AWS_SECRET_ACCESS_KEY", None
             ),
-            "ADES_STAGEIN_AWS_SERVICEURL": os.getenv("AWS_SERVICE_URL", None),
-            "ADES_STAGEIN_AWS_REGION": os.getenv("AWS_REGION", None),
-            "ADES_STAGEIN_AWS_ACCESS_KEY_ID": os.getenv("AWS_ACCESS_KEY_ID", None),
-            "ADES_STAGEIN_AWS_SECRET_ACCESS_KEY": os.getenv(
-                "AWS_SECRET_ACCESS_KEY", None
+            "STAGEIN_AWS_SERVICEURL": os.getenv("STAGEIN_AWS_SERVICEURL", None),
+            "STAGEIN_AWS_REGION": os.getenv("STAGEIN_AWS_REGION", None),
+            "STAGEIN_AWS_ACCESS_KEY_ID": os.getenv("STAGEIN_AWS_ACCESS_KEY_ID", None),
+            "STAGEIN_AWS_SECRET_ACCESS_KEY": os.getenv(
+                "STAGEIN_AWS_SECRET_ACCESS_KEY", None
             ),
-            "ADES_STAGEOUT_OUTPUT": os.getenv("ADES_STAGEOUT_OUTPUT", None)
+            "STAGEOUT_OUTPUT": os.getenv("STAGEOUT_OUTPUT", None)
         }
 
     def handle_outputs(self, log, output, usage_report, tool_logs):
@@ -116,7 +116,7 @@ def {{cookiecutter.workflow_id |replace("-", "_")  }}(conf, inputs, outputs):
     exit_status = runner.execute()
 
     if exit_status == zoo.SERVICE_SUCCEEDED:
-        outputs = runner.outputs
+        outputs["stac"] = json.load(runner.outputs.outputs)["StacCatalogUri"]
         return zoo.SERVICE_SUCCEEDED
 
     else:

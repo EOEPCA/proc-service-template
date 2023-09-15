@@ -35,21 +35,23 @@ class CalrissianRunnerExecutionHandler(ExecutionHandler):
         }
 
     def get_additional_parameters(self):
-        return {
-            "STAGEOUT_AWS_SERVICEURL": os.getenv("STAGEOUT_AWS_SERVICEURL", None),
-            "STAGEOUT_AWS_REGION": os.getenv("STAGEOUT_AWS_REGION", None),
-            "STAGEOUT_AWS_ACCESS_KEY_ID": os.getenv("STAGEOUT_AWS_ACCESS_KEY_ID", None),
-            "STAGEOUT_AWS_SECRET_ACCESS_KEY": os.getenv(
-                "STAGEOUT_AWS_SECRET_ACCESS_KEY", None
-            ),
-            "STAGEIN_AWS_SERVICEURL": os.getenv("STAGEIN_AWS_SERVICEURL", None),
-            "STAGEIN_AWS_REGION": os.getenv("STAGEIN_AWS_REGION", None),
-            "STAGEIN_AWS_ACCESS_KEY_ID": os.getenv("STAGEIN_AWS_ACCESS_KEY_ID", None),
-            "STAGEIN_AWS_SECRET_ACCESS_KEY": os.getenv(
-                "STAGEIN_AWS_SECRET_ACCESS_KEY", None
-            ),
-            "STAGEOUT_OUTPUT": os.getenv("STAGEOUT_OUTPUT", None)
-        }
+
+        try:
+            with open('/assets/wfinputs.yaml', 'r') as file:
+                additional_params = yaml.safe_load(file)
+            return additional_params
+        # if file does not exist
+        except FileNotFoundError:
+            return {}
+        # if file is empty
+        except yaml.YAMLError:
+            return {}
+        # if file is not yaml
+        except yaml.scanner.ScannerError:
+            return {}
+        except:
+            return {}
+
 
     def handle_outputs(self, log, output, usage_report, tool_logs):
         

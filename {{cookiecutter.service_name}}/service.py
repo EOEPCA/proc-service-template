@@ -118,7 +118,9 @@ def {{cookiecutter.workflow_id |replace("-", "_")  }}(conf, inputs, outputs):
     exit_status = runner.execute()
 
     if exit_status == zoo.SERVICE_SUCCEEDED:
-        outputs["stac"] = json.load(runner.outputs.outputs)["StacCatalogUri"]
+        out = {"StacCatalogUri": runner.outputs.outputs["stac"]["value"]["StacCatalogUri"] }
+        json_out_string= json.dumps(out, indent=4)
+        outputs["stac"]["value"]=json_out_string
         return zoo.SERVICE_SUCCEEDED
 
     else:

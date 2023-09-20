@@ -10,34 +10,60 @@ from zoo_calrissian_runner import ExecutionHandler, ZooCalrissianRunner
 
 class CalrissianRunnerExecutionHandler(ExecutionHandler):
     def get_pod_env_vars(self):
-        # sets two env vars in the pod launched by Calrissian
-        return {"A": "1", "B": "1"}
+        try:
+            with open('/assets/pod_env_vars.yaml', 'r') as file:
+                additional_params = yaml.safe_load(file)
+            return additional_params
+        # if file does not exist
+        except FileNotFoundError:
+            return {}
+        # if file is empty
+        except yaml.YAMLError:
+            return {}
+        # if file is not yaml
+        except yaml.scanner.ScannerError:
+            return {}
+        except:
+            return {}   
 
     def get_pod_node_selector(self):
-        return None
+        try:
+            with open('/assets/pod_nodeselectors.yaml', 'r') as file:
+                additional_params = yaml.safe_load(file)
+            return additional_params
+        # if file does not exist
+        except FileNotFoundError:
+            return {}
+        # if file is empty
+        except yaml.YAMLError:
+            return {}
+        # if file is not yaml
+        except yaml.scanner.ScannerError:
+            return {}
+        except:
+            return {}  
 
     def get_secrets(self):
-        username = os.getenv("CR_USERNAME", None)
-        password = os.getenv("CR_TOKEN", None)
-        registry = os.getenv("CR_ENDPOINT", None)
-
-        auth = base64.b64encode(f"{username}:{password}".encode("utf-8")).decode(
-            "utf-8"
-        )
-
-        return {
-            "auths": {
-                registry: {
-                    "username": username,
-                    "auth": auth,
-                },
-            }
-        }
+        try:
+            with open('/assets/pod_imagePullSecrets.yaml', 'r') as file:
+                additional_params = yaml.safe_load(file)
+            return additional_params
+        # if file does not exist
+        except FileNotFoundError:
+            return {}
+        # if file is empty
+        except yaml.YAMLError:
+            return {}
+        # if file is not yaml
+        except yaml.scanner.ScannerError:
+            return {}
+        except:
+            return {}        
 
     def get_additional_parameters(self):
 
         try:
-            with open('/assets/wfinputs.yaml', 'r') as file:
+            with open('/assets/additional_inputs.yaml', 'r') as file:
                 additional_params = yaml.safe_load(file)
             return additional_params
         # if file does not exist

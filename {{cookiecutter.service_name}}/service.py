@@ -81,37 +81,6 @@ class CalrissianRunnerExecutionHandler(ExecutionHandler):
 
     def handle_outputs(self, log, output, usage_report, tool_logs):
         
-        os.makedirs(
-            os.path.join(self.conf["main"]["tmpPath"], self.job_id),
-            mode=0o777,
-            exist_ok=True,
-        )
-        with open(os.path.join(self.conf["main"]["tmpPath"], self.job_id, "job.log"), "w") as f:
-            f.writelines(log)
-
-        with open(
-            os.path.join(self.conf["main"]["tmpPath"], self.job_id, "output.json"), "w"
-        ) as output_file:
-            json.dump(output, output_file, indent=4)
-
-        with open(
-            os.path.join(self.conf["main"]["tmpPath"], self.job_id, "usage-report.json"),
-            "w",
-        ) as usage_report_file:
-            json.dump(usage_report, usage_report_file, indent=4)
-
-        aggregated_outputs = {}
-        aggregated_outputs = {
-            "usage_report": usage_report,
-            "outputs": output,
-            "log": os.path.join(self.job_id, "job.log"),
-        }
-
-        with open(
-            os.path.join(self.conf["main"]["tmpPath"], self.job_id, "report.json"), "w"
-        ) as report_file:
-            json.dump(aggregated_outputs, report_file, indent=4)
-
         # self.conf["service_logs"] = [
         #     {
         #         "url": f"https://someurl.com/{os.path.basename(tool_log)}",
@@ -141,6 +110,17 @@ def {{cookiecutter.workflow_id |replace("-", "_")  }}(conf, inputs, outputs):
         execution_handler=CalrissianRunnerExecutionHandler(conf=conf),
     )
     runner._namespace_name=f"{conf['lenv']['Identifier']}-{conf['lenv']['usid']}"
+
+    # we are changing the working directory to store the outputs
+    # in a directory dedicated to this execution
+    working_dir=os.path.join(conf["main"]["tmpPath"], runner._namespace_name)
+    os.makedirs(
+            working_dir,
+            mode=0o777,
+            exist_ok=True,
+    )
+    os.chdir(working_dir)
+
     exit_status = runner.execute()
 
     if exit_status == zoo.SERVICE_SUCCEEDED:

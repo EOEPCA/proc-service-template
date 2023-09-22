@@ -80,7 +80,7 @@ class CalrissianRunnerExecutionHandler(ExecutionHandler):
 
 
     def handle_outputs(self, log, output, usage_report, tool_logs):
-        
+        pass
         # self.conf["service_logs"] = [
         #     {
         #         "url": f"https://someurl.com/{os.path.basename(tool_log)}",

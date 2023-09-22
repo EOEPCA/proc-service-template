@@ -41,15 +41,25 @@ class CalrissianRunnerExecutionHandler(ExecutionHandler):
 
 
     def handle_outputs(self, log, output, usage_report, tool_logs):
+        servicesLogs=[
+            {
+                "url": f"https://someurl.com/{os.path.basename(tool_log)}",
+                "title": f"Tool log {os.path.basename(tool_log)}",
+                "rel": "related",
+            }
+            for tool_log in tool_logs
+        ]
+        for i in range(len(servicesLogs)):
+            okeys=["url","title","rel"]
+            keys=["url","title","rel"]
+            if i>0:
+                for j in range(len(keys)):
+                    keys[j]=keys[j]+"_"+str(i)
+            if "service_logs" not in conf:
+                self.conf["service_logs"]={}
+            for j in range(len(keys)):
+                self.conf["service_logs"][keys[j]]=servicesLogs[okeys[j]]
         pass
-        # self.conf["service_logs"] = [
-        #     {
-        #         "url": f"https://someurl.com/{os.path.basename(tool_log)}",
-        #         "title": f"Tool log {os.path.basename(tool_log)}",
-        #         "rel": "related",
-        #     }
-        #     for tool_log in tool_logs
-        # ]
 
 
 def {{cookiecutter.workflow_id |replace("-", "_")  }}(conf, inputs, outputs):

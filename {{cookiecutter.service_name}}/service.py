@@ -55,7 +55,7 @@ class CalrissianRunnerExecutionHandler(ExecutionHandler):
             if i>0:
                 for j in range(len(keys)):
                     keys[j]=keys[j]+"_"+str(i)
-            if "service_logs" not in conf:
+            if "service_logs" not in self.conf:
                 self.conf["service_logs"]={}
             for j in range(len(keys)):
                 self.conf["service_logs"][keys[j]]=servicesLogs[okeys[j]]

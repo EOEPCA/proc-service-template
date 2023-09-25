@@ -59,6 +59,7 @@ class CalrissianRunnerExecutionHandler(ExecutionHandler):
                 self.conf["service_logs"]={}
             for j in range(len(keys)):
                 self.conf["service_logs"][keys[j]]=servicesLogs[okeys[j]]
+        self.conf["service_logs"]["length"]=str(len(servicesLogs))
         pass
 
 

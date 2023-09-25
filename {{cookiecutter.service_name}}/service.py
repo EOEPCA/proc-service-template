@@ -9,9 +9,10 @@ import base64
 from zoo_calrissian_runner import ExecutionHandler, ZooCalrissianRunner
 
 class CalrissianRunnerExecutionHandler(ExecutionHandler):
-    def get_pod_env_vars(self):
+
+    def local_get_file(self,fileName):
         try:
-            with open('/assets/pod_env_vars.yaml', 'r') as file:
+            with open(fileName, 'r') as file:
                 additional_params = yaml.safe_load(file)
             return additional_params
         # if file does not exist
@@ -24,71 +25,41 @@ class CalrissianRunnerExecutionHandler(ExecutionHandler):
         except yaml.scanner.ScannerError:
             return {}
         except:
-            return {}   
+            return {}
+
+    def get_pod_env_vars(self):
+        return self.local_get_file('/assets/pod_env_vars.yaml')
 
     def get_pod_node_selector(self):
-        try:
-            with open('/assets/pod_nodeselectors.yaml', 'r') as file:
-                additional_params = yaml.safe_load(file)
-            return additional_params
-        # if file does not exist
-        except FileNotFoundError:
-            return {}
-        # if file is empty
-        except yaml.YAMLError:
-            return {}
-        # if file is not yaml
-        except yaml.scanner.ScannerError:
-            return {}
-        except:
-            return {}  
+        return self.local_get_file('/assets/pod_nodeselectors.yaml')
 
     def get_secrets(self):
-        try:
-            with open('/assets/pod_imagePullSecrets.yaml', 'r') as file:
-                additional_params = yaml.safe_load(file)
-            return additional_params
-        # if file does not exist
-        except FileNotFoundError:
-            return {}
-        # if file is empty
-        except yaml.YAMLError:
-            return {}
-        # if file is not yaml
-        except yaml.scanner.ScannerError:
-            return {}
-        except:
-            return {}        
+        return self.local_get_file('/assets/pod_imagePullSecrets.yaml')
 
     def get_additional_parameters(self):
-
-        try:
-            with open('/assets/additional_inputs.yaml', 'r') as file:
-                additional_params = yaml.safe_load(file)
-            return additional_params
-        # if file does not exist
-        except FileNotFoundError:
-            return {}
-        # if file is empty
-        except yaml.YAMLError:
-            return {}
-        # if file is not yaml
-        except yaml.scanner.ScannerError:
-            return {}
-        except:
-            return {}
+        return self.local_get_file('/assets/additional_inputs.yaml')
 
 
     def handle_outputs(self, log, output, usage_report, tool_logs):
+        servicesLogs=[
+            {
+                "url": f"https://someurl.com/{os.path.basename(tool_log)}",
+                "title": f"Tool log {os.path.basename(tool_log)}",
+                "rel": "related",
+            }
+            for tool_log in tool_logs
+        ]
+        for i in range(len(servicesLogs)):
+            okeys=["url","title","rel"]
+            keys=["url","title","rel"]
+            if i>0:
+                for j in range(len(keys)):
+                    keys[j]=keys[j]+"_"+str(i)
+            if "service_logs" not in conf:
+                self.conf["service_logs"]={}
+            for j in range(len(keys)):
+                self.conf["service_logs"][keys[j]]=servicesLogs[okeys[j]]
         pass
-        # self.conf["service_logs"] = [
-        #     {
-        #         "url": f"https://someurl.com/{os.path.basename(tool_log)}",
-        #         "title": f"Tool log {os.path.basename(tool_log)}",
-        #         "rel": "related",
-        #     }
-        #     for tool_log in tool_logs
-        # ]
 
 
 def {{cookiecutter.workflow_id |replace("-", "_")  }}(conf, inputs, outputs):

@@ -11,6 +11,11 @@ from zoo_calrissian_runner import ExecutionHandler, ZooCalrissianRunner
 class CalrissianRunnerExecutionHandler(ExecutionHandler):
 
     def local_get_file(self,fileName):
+        """
+        Read and load a yaml file
+
+        :param fileName the yaml file to load
+        """
         try:
             with open(fileName, 'r') as file:
                 additional_params = yaml.safe_load(file)
@@ -41,6 +46,16 @@ class CalrissianRunnerExecutionHandler(ExecutionHandler):
 
 
     def handle_outputs(self, log, output, usage_report, tool_logs):
+        """
+        Handle the output files of the execution.
+
+        :param log: The application log file of the execution.
+        :param output: The output file of the execution.
+        :param usage_report: The performance metrics file for the application during execution.
+        :param tool_logs: A list of paths to individual workflow step logs from the execution.
+
+        """
+        # link element to add to the statusInfo
         servicesLogs=[
             {
                 "url": f"{self.conf['main']['tmpUrl']}/{self.conf['lenv']['Identifier']}-{self.conf['lenv']['usid']}/{os.path.basename(tool_log)}",
@@ -60,7 +75,6 @@ class CalrissianRunnerExecutionHandler(ExecutionHandler):
             for j in range(len(keys)):
                 self.conf["service_logs"][keys[j]]=servicesLogs[i][okeys[j]]
         self.conf["service_logs"]["length"]=str(len(servicesLogs))
-        pass
 
 
 def {{cookiecutter.workflow_id |replace("-", "_")  }}(conf, inputs, outputs):

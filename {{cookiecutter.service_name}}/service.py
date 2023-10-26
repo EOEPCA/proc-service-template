@@ -95,7 +95,8 @@ def {{cookiecutter.workflow_id |replace("-", "_")  }}(conf, inputs, outputs):
         outputs=outputs,
         execution_handler=CalrissianRunnerExecutionHandler(conf=conf),
     )
-    runner._namespace_name=f"{conf['lenv']['Identifier'].replace("_","-")}-{conf['lenv']['usid']}"
+    temporaryNamespace=conf['lenv']['Identifier'].replace("_","-")
+    runner._namespace_name=f"{temporaryNamespace}-{conf['lenv']['usid']}"
 
     # we are changing the working directory to store the outputs
     # in a directory dedicated to this execution

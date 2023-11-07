@@ -82,6 +82,11 @@ class CalrissianRunnerExecutionHandler(ExecutionHandler):
 
 def {{cookiecutter.workflow_id |replace("-", "_")  }}(conf, inputs, outputs):
 
+    execution_handler = CalrissianRunnerExecutionHandler(conf=conf)
+    print(execution_handler.get_additional_parameters())
+    
+    print(f"conf {conf.keys()}")
+
     with open(
         os.path.join(
             pathlib.Path(os.path.realpath(__file__)).parent.absolute(),
@@ -96,7 +101,7 @@ def {{cookiecutter.workflow_id |replace("-", "_")  }}(conf, inputs, outputs):
         conf=conf,
         inputs=inputs,
         outputs=outputs,
-        execution_handler=CalrissianRunnerExecutionHandler(conf=conf),
+        execution_handler=execution_handler,
     )
     runner._namespace_name=f"{conf['lenv']['Identifier']}-{conf['lenv']['usid']}"
 

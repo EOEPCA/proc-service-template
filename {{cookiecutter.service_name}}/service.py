@@ -18,8 +18,8 @@ class CalrissianRunnerExecutionHandler(ExecutionHandler):
         """
         try:
             with open(fileName, 'r') as file:
-                additional_params = yaml.safe_load(file)
-            return additional_params
+                data = yaml.safe_load(file)
+            return data
         # if file does not exist
         except FileNotFoundError:
             return {}
@@ -33,17 +33,20 @@ class CalrissianRunnerExecutionHandler(ExecutionHandler):
             return {}
 
     def get_pod_env_vars(self):
-        return self.local_get_file('/assets/pod_env_vars.yaml')
+        
+        return self.conf["pod_env_vars"]
 
     def get_pod_node_selector(self):
-        return self.local_get_file('/assets/pod_nodeselectors.yaml')
+        
+        return self.conf["node_selector"]
 
     def get_secrets(self):
+        
         return self.local_get_file('/assets/pod_imagePullSecrets.yaml')
 
     def get_additional_parameters(self):
-        return self.local_get_file('/assets/additional_inputs.yaml')
-
+        
+        return self.conf["additional_parameters"]
 
     def handle_outputs(self, log, output, usage_report, tool_logs):
         """

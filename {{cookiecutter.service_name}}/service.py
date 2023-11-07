@@ -34,19 +34,19 @@ class CalrissianRunnerExecutionHandler(ExecutionHandler):
 
     def get_pod_env_vars(self):
         
-        return self.conf["pod_env_vars"]
+        return self.conf.get("pod_env_vars", {})
 
     def get_pod_node_selector(self):
         
-        return self.conf["node_selector"]
-
+        return self.conf.get("pod_node_selector", {})
+    
     def get_secrets(self):
         
         return self.local_get_file('/assets/pod_imagePullSecrets.yaml')
 
     def get_additional_parameters(self):
         
-        return self.conf["additional_parameters"]
+        return self.conf.get("additional_parameters", {})
 
     def handle_outputs(self, log, output, usage_report, tool_logs):
         """
